@@ -37,6 +37,7 @@
         }
     })
     // работа с обратным таймером акции
+    //=================================================================================
 
     const deadline = '2022-03-11'
 
@@ -98,6 +99,7 @@
     setTimer('.timer', deadline)
 
     // вызов модального окна
+    //=================================================================================
 
     const modalTimerId = setTimeout(openModal, 50000)
 
@@ -154,6 +156,7 @@
     window.addEventListener('scroll', showModelByScroll)
 
     // классы для карточек
+    //=================================================================================
 
     class MenuCard {
         constructor(pic, alt, menuName, about, price, parentSelector,  ...classes) {
@@ -248,9 +251,6 @@
             `
             form.insertAdjacentElement('afterend', statusMessage)
 
-            const request = new XMLHttpRequest()
-            request.open('POST', 'server.php')
-            request.setRequestHeader('Content-Type', 'application/json')
             const formData = new FormData(form)
 
             const object = {}
@@ -258,22 +258,25 @@
                 object[key] = value
             })
 
-            const json = JSON.stringify(object)
+            // Fetch API using
 
-            request.send(json)
-
-            request.addEventListener('load', () => {
-                if (request.status === 200) {
-                    console.log(request.response)
-                    showThanksModal(message.success)
-                    form.reset()
-                    statusMessage.remove()
-                } else {
-                    showThanksModal(message.failure)
-                }
+            fetch('server.php', {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(object)
+            }).then(data => data.text()
+            ).then(data => {
+                console.log(data)
+                showThanksModal(message.success)
+                statusMessage.remove()
+            }).catch(() => {
+                showThanksModal(message.failure)
+            }).finally(() => {
+                form.reset()
             })
         })
-
     }
 
     function showThanksModal(message) {
@@ -298,4 +301,18 @@
             closeModal()
         }, 4000)
     }
+
+    // Fetch API using example
+    //=================================================================================
+
+    fetch('https://jsonplaceholder.typicode.com/posts', {
+        method: "POST",
+        body: JSON.stringify({name: 'Alex'}),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+      .then(response => response.json()) // здесь возвращается промис
+      .then(json => console.log(json))
+
  })
