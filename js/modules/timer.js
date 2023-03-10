@@ -1,7 +1,5 @@
-function timer() {
+function timer(id, deadline) {
     // работа с обратным таймером акции
-
-    const deadline = '2022-03-11'
 
     function getTimeRemaining(endtime = '2023-03-11') {
         let days, hours, minutes, seconds
@@ -58,7 +56,7 @@ function timer() {
             }
         }
     }
-    setTimer('.timer', deadline)
+    setTimer(id, deadline)
 }
 
 export default timer
