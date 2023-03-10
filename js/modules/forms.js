@@ -1,7 +1,10 @@
-function forms() {
+import { openModal, closeModal} from "./modal"
+import { postData } from "../services/services"
+
+function forms(formSelector, modalSelector, modalTimerId) {
      // работа с формами отправки
 
-     const forms = document.querySelectorAll('form')
+     const forms = document.querySelectorAll(formSelector)
      const message = {
          loading: 'img/form/spinner.svg',
          success: 'Спасибо, мы скоро с Вами свяжемся',
@@ -11,18 +14,6 @@ function forms() {
      forms.forEach(item => {
          bindPostData(item)
      })
- 
-     const postData = async (url, data) => { // async позволяет дождаться результата запроса
-         const res = await fetch(url, { // ждем окончания завпроса, который в await
-             method: "POST",
-             headers: {
-                 'Content-Type': 'application/json'
-             },
-             body: data
-         })
-         
-         return await res.json()
-     }
  
      function bindPostData(form) {
          form.addEventListener('submit', (e) => {
@@ -44,22 +35,22 @@ function forms() {
  
              postData('http://localhost:3000/requests', json)
              .then(data => {
-                 console.log(data)
-                 showThanksModal(message.success)
+                //  console.log(data)
+                 showThanksModal(message.success, modalSelector, modalTimerId)
                  statusMessage.remove()
              }).catch(() => {
-                 showThanksModal(message.failure)
+                 showThanksModal(message.failure, modalSelector, modalTimerId)
              }).finally(() => {
                  form.reset()
              })
          })
      }
  
-     function showThanksModal(message) {
+     function showThanksModal(message, modalSelector) {
          const prevModalDialog = document.querySelector('.modal__dialog')
  
          prevModalDialog.classList.add('hide')
-         openModal()
+         openModal(modalSelector, modalTimerId)
  
          const thanksModal = document.createElement('div')
          thanksModal.classList.add('modal__dialog')
@@ -74,7 +65,7 @@ function forms() {
              thanksModal.remove()
              prevModalDialog.classList.add('show')
              prevModalDialog.classList.remove('hide')
-             closeModal()
+             closeModal(modalSelector)
          }, 4000)
      }
  
@@ -96,4 +87,4 @@ function forms() {
      //     .then(res => console.log(res))
 }
 
-module.exports = forms
+export default forms
